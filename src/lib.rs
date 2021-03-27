@@ -1,3 +1,6 @@
+#![feature(map_into_keys_values)]
+
+pub mod direction;
 pub mod grid;
 pub mod location;
 pub mod pathfinding;
