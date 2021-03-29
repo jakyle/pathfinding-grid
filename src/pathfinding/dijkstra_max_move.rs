@@ -3,7 +3,7 @@ use std::collections::{BinaryHeap, HashMap, HashSet};
 
 use super::BHeapState;
 
-pub fn path(grid: Grid, start: &Location, max_move: usize) -> HashSet<Location> {
+pub fn path_2d(grid: Grid, start: &Location, max_move: usize) -> HashSet<Location> {
     let mut visited = HashSet::new();
     let mut cost_so_far = HashMap::new();
 
@@ -13,8 +13,8 @@ pub fn path(grid: Grid, start: &Location, max_move: usize) -> HashSet<Location> 
     cost_so_far.insert(*start, 0);
 
     while let Some(BHeapState(_, item)) = heap.pop() {
-        for next in grid.visitable_neighbors_iter(item) {
-            let new_cost = *cost_so_far.get(&item).unwrap() + grid.cost(&item, &next);
+        for next in grid.visitable_neighbors_2d_iter(item) {
+            let new_cost = *cost_so_far.get(&item).unwrap() + grid.cost_2d(&item, &next);
 
             if max_move >= new_cost
                 && (!cost_so_far.contains_key(&next) || new_cost < *cost_so_far.get(&next).unwrap())
