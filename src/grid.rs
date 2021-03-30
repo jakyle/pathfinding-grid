@@ -8,7 +8,7 @@ pub struct Grid {
     pub width: i8,
     pub length: i8,
     pub height: i8,
-    pub cells: HashMap<Location, Cell>,
+    cells: HashMap<Location, Cell>,
     dirs_2d: [Direction; 8],
     dirs_3d: [Direction; 18]
 }
@@ -64,36 +64,42 @@ impl Grid {
         }
     }
 
-    pub fn add_cell_boundry(&mut self, loc: &Location, dir: Direction, boundry: Boundry) {
-        let cell = self.cells.get_mut(loc).unwrap();
+    pub fn add_cell_boundry_and_adjacent(&mut self, loc: &Location, dir: Direction, boundry: Boundry) {
 
-        if cell.boundries.is_none() {
-            let map: HashMap<Direction, Boundry> = HashMap::new();
-            cell.boundries = Some(map);
+        if !self.in_bounds(&loc) { 
+            return; 
         }
+
+        let cell = self.cells.get_mut(loc).unwrap();
+        cell.add_boundry(dir.clone(), boundry.clone());
 
         let opposite_dir = dir.get_opposite();
 
-        cell.boundries
-            .as_mut()
-            .unwrap()
-            .insert(dir, boundry.clone());
-
         let opp_loc = cell.loc.get_loc_from_dir(&opposite_dir);
 
-        if self.in_bounds(&loc) {
-            let other_cell = self.cells.get_mut(&opp_loc).unwrap();
+        if self.in_bounds(&opp_loc) {
+            return;
+        }
 
-            if other_cell.boundries.is_none() {
-                let map: HashMap<Direction, Boundry> = HashMap::new();
-                other_cell.boundries = Some(map);
-            }
+        let other_cell = self.cells.get_mut(&opp_loc).unwrap();
+        other_cell.add_boundry(dir, boundry);
+    }
 
-            other_cell
-                .boundries
-                .as_mut()
-                .unwrap()
-                .insert(opposite_dir, boundry);
+    pub fn get_mut_cell(&mut self, loc: &Location) -> Option<&mut Cell> {
+
+        if self.in_bounds(loc) {
+            Some(self.cells.get_mut(loc).unwrap())
+        } else {
+            None
+        }
+    }
+
+    pub fn get_ref_cell(&self, loc: &Location) -> Option<&Cell> {
+
+        if self.in_bounds(loc) {
+            Some(self.cells.get(loc).unwrap())
+        } else {
+            None
         }
     }
 
@@ -319,11 +325,11 @@ mod tests {
     #[fixture]
     fn grid() -> Grid {
         let mut grid = Grid::new(6, 5, 5);
-        grid.add_cell_boundry(&Location::new(2, 0, 1), Direction::S, Boundry::Full);
-        grid.add_cell_boundry(&Location::new(3, 0, 1), Direction::S, Boundry::Full);
-        grid.add_cell_boundry(&Location::new(1, 0, 2), Direction::E, Boundry::Full);
-        grid.add_cell_boundry(&Location::new(4, 0, 2), Direction::SE, Boundry::Full);
-        grid.add_cell_boundry(&Location::new(3, 0, 2), Direction::S, Boundry::Half);
+        grid.add_cell_boundry_and_adjacent(&Location::new(2, 0, 1), Direction::S, Boundry::Full);
+        grid.add_cell_boundry_and_adjacent(&Location::new(3, 0, 1), Direction::S, Boundry::Full);
+        grid.add_cell_boundry_and_adjacent(&Location::new(1, 0, 2), Direction::E, Boundry::Full);
+        grid.add_cell_boundry_and_adjacent(&Location::new(4, 0, 2), Direction::SE, Boundry::Full);
+        grid.add_cell_boundry_and_adjacent(&Location::new(3, 0, 2), Direction::S, Boundry::Half);
 
         grid.toggle_cell_difficult_terrain(&Location::new(2, 0, 3));
         grid.toggle_cell_difficult_terrain(&Location::new(2, 0, 4));

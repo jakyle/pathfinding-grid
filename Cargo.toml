@@ -1,5 +1,5 @@
 [package]
-name = "pathfinding-tactical"
+name = "pathfinding-grid"
 version = "0.1.0"
 authors = ["Jakyle <jjackson360@gmail.com>"]
 edition = "2018"
@@ -11,4 +11,4 @@ rstest = "0.7.0"
 
 
 [dependencies]
-
+    

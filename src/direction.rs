@@ -25,7 +25,7 @@ pub enum Direction {
     DE,
     DSW,
     DS,
-    DSE
+    DSE,
 }
 
 impl Direction {
@@ -56,8 +56,7 @@ impl Direction {
             Direction::DE => Direction::UW,
             Direction::DSW => Direction::UNE,
             Direction::DS => Direction::UN,
-            Direction::DSE => Direction::UNW
-
+            Direction::DSE => Direction::UNW,
         }
     }
 }
