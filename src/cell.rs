@@ -1,3 +1,5 @@
+use legion::Entity;
+
 use crate::prelude::{Direction, Location};
 use std::collections::HashMap;
 
@@ -12,7 +14,7 @@ pub struct Cell {
     pub boundries: Option<HashMap<Direction, Boundry>>,
     pub is_difficult_terrain: bool,
     pub is_obstructed: bool,
-    pub actor_ids: Vec<String>,
+    pub entities: Vec<legion::Entity>,
 }
 
 impl Cell {
@@ -22,7 +24,7 @@ impl Cell {
             boundries: None,
             is_difficult_terrain: false,
             is_obstructed: false,
-            actor_ids: vec![],
+            entities: vec![],
         }
     }
 
@@ -67,18 +69,18 @@ impl Cell {
         self.boundries.as_mut().unwrap().insert(dir, boundry);
     }
 
-    pub fn add_actor_id(&mut self, actor_id: String) {
-        self.actor_ids.push(actor_id);
+    pub fn add_entity(&mut self, entity: Entity) {
+        self.entities.push(entity);
     }
 
-    pub fn remove_actor_id(&mut self, actor_id: &str) {
-        match self.actor_ids.iter().position(|id| id == actor_id) {
-            Some(idx) => self.actor_ids.remove(idx),
+    pub fn remove_entity(&mut self, entity: &Entity) {
+        match self.entities.iter().position(|id| id == entity) {
+            Some(idx) => self.entities.remove(idx),
             None => return,
         };
     }
 
-    pub fn get_actor_ids_iter(&self) -> impl Iterator<Item = &String> + '_ {
-        self.actor_ids.iter()
+    pub fn get_entities_iter(&self) -> impl Iterator<Item = &Entity> + '_ {
+        self.entities.iter()
     }
 }

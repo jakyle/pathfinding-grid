@@ -11,4 +11,4 @@ rstest = "0.7.0"
 
 
 [dependencies]
-    
+legion = "^0.4.0"
